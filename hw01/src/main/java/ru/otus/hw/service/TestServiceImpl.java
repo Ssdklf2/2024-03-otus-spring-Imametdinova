@@ -18,14 +18,21 @@ public class TestServiceImpl implements TestService {
         ioService.printLine("");
         ioService.printFormattedLine("Please answer the questions below%n");
         List<Question> questions = dao.findAll();
-        for (Question question : questions) {
-            ioService.printFormattedLine("Question: %s", question.text());
-            ioService.printLine("Answers: ");
-            List<Answer> answers = question.answers();
-            for (int i = 0; i < answers.size(); i++) {
-                ioService.printFormattedLine("%d. %s", i + 1, answers.get(i).text());
-            }
+        questions.forEach(question -> {
+            printQuestion(question);
+            printAnswers(question.answers());
             ioService.printFormattedLine("%n");
+        });
+    }
+
+    private void printQuestion(Question question) {
+        ioService.printFormattedLine("Question: %s", question.text());
+    }
+
+    private void printAnswers(List<Answer> answers) {
+        ioService.printLine("Answers: ");
+        for (int i = 0; i < answers.size(); i++) {
+            ioService.printFormattedLine("%d. %s", i + 1, answers.get(i).text());
         }
     }
 }

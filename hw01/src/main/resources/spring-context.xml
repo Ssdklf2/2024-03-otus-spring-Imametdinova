@@ -28,6 +28,4 @@
     <bean id="appProperties" class="ru.otus.hw.config.AppProperties">
         <constructor-arg name="testFileName" value="questions.csv"/>
     </bean>
-
-    <bean id="csvConverter" class="ru.otus.hw.dao.dto.AnswerCsvConverter"/>
 </beans>
