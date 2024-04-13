@@ -31,10 +31,10 @@ class TestServiceImplTest {
     private QuestionDao dao;
 
     @Captor
-    ArgumentCaptor<String> lineCaptor;
+    private ArgumentCaptor<String> lineCaptor;
 
     @Captor
-    ArgumentCaptor<Object[]> argsCaptor;
+    private ArgumentCaptor<Object[]> argsCaptor;
 
     @Test
     void executeTest() {
