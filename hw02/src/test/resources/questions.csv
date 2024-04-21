@@ -1,0 +1,5 @@
+# Добавить сюда своих вопросов. Эту строку надо пропустить при настройке CsvToBean (withSkipLines)
+Which option is a good way to handle the exception?;@SneakyThrow%false|e.printStackTrace()%false|Rethrow with wrapping in business exception (for example, QuestionReadException)%true|Ignoring exception%false
+What is the chemical symbol for Gold?;As%false|Ar%false|Ag%false|Au%true
+What is the world's largest ocean?;Atlantic Ocean%false|Indian Ocean%false|Pacific Ocean%true|Southern Ocean%false
+What is the capital city of Italy?;Milan%false|Venice%false|Florence%false|Rome%true
