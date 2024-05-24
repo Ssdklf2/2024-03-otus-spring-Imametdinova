@@ -1,6 +1,5 @@
 package ru.otus.hw.services;
 
-import jakarta.persistence.NoResultException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -14,7 +13,8 @@ import ru.otus.hw.repositories.BookRepositoryJpa;
 import ru.otus.hw.repositories.GenreRepositoryJpa;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @Import({BookServiceImpl.class, AuthorRepositoryJpa.class, GenreRepositoryJpa.class, BookRepositoryJpa.class})
@@ -57,7 +57,7 @@ public class BookServiceTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void deleteByIdTest() {
         service.deleteById(FIRST_BOOK_ID);
-        assertThrows(NoResultException.class, () -> bookRepository.findById(FIRST_BOOK_ID));
+        assertTrue(bookRepository.findById(FIRST_BOOK_ID).isEmpty());
     }
 
     @Test
