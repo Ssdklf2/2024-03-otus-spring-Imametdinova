@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -20,7 +21,7 @@ public class Book {
 
     @Id
     @EqualsAndHashCode.Include
-    private long id;
+    private String id;
 
     @Field(name = "title")
     private String title;
@@ -30,4 +31,10 @@ public class Book {
 
     @ToString.Exclude
     private Genre genre;
+
+    public Book(String title, Author author, Genre genre) {
+        this.title = title;
+        this.author = author;
+        this.genre = genre;
+    }
 }

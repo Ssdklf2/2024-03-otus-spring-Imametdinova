@@ -1,6 +1,7 @@
 package ru.otus.hw.services;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.exceptions.EntityNotFoundException;
@@ -19,37 +20,35 @@ public class CommentServiceImpl implements CommentService {
 
     private final BookRepository bookRepository;
 
-    @Transactional(readOnly = true)
     @Override
-    public List<Comment> findAllByBookId(long bookId) {
+    public List<Comment> findAllByBookId(String bookId) {
         return commentRepository.findByBookId(bookId);
     }
 
-    @Transactional(readOnly = true)
     @Override
-    public Optional<Comment> findById(long id) {
+    public Optional<Comment> findById(String id) {
         return commentRepository.findById(id);
     }
 
     @Transactional
     @Override
-    public void deleteById(long id) {
+    public void deleteById(String id) {
         commentRepository.deleteById(id);
     }
 
     @Transactional
     @Override
-    public Comment update(long id, String text, long bookId) {
+    public Comment update(String id, String text, String bookId) {
         return save(id, text, bookId);
     }
 
     @Transactional
     @Override
-    public Comment insert(String text, long bookId) {
-        return save(0, text, bookId);
+    public Comment insert(String text, String bookId) {
+        return save(null, text, bookId);
     }
 
-    private Comment save(long id, String text, long bookId) {
+    private Comment save(String id, String text, String bookId) {
         var author = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book with id %d not found".formatted(bookId)));
         var comment = new Comment(id, text, author);

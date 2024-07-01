@@ -11,8 +11,6 @@ import ru.otus.hw.models.Book;
 import ru.otus.hw.models.Comment;
 import ru.otus.hw.models.Genre;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class BookRepositoryCustomImpl implements BookRepositoryCustom {
@@ -22,10 +20,9 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
     private final CommentRepository commentRepository;
 
     @Override
-    public void deleteBook(Book book) {
-        mongoTemplate.remove(Query.query(Criteria.where("_id").is(book.getId())), Book.class);
-        List<Comment> comments = commentRepository.findByBookId(book.getId());
-        commentRepository.deleteAllById(comments.stream().map(Comment::getId).collect(Collectors.toSet()));
+    public void deleteByBookId(String bookId) {
+        mongoTemplate.remove(Query.query(Criteria.where("_id").is(bookId)), Book.class);
+        mongoTemplate.remove(Query.query(Criteria.where("book._id").is(bookId)), Comment.class);
     }
 
     @Override

@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Import({BookServiceImpl.class})
 public class BookServiceTest {
 
-    private static final long FIRST_BOOK_ID = 1L;
+    private static final String FIRST_BOOK_ID = "1";
 
     private static final int EXPECTED_NUMBER_OF_BOOKS = 3;
 
@@ -43,10 +43,9 @@ public class BookServiceTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void insertTest() {
-        var expectedId = 0L;
-        bookService.insert("title", 1L, 1L);
-        var expectedBook = bookRepository.findById(expectedId);
-        assertTrue(expectedBook.isPresent());
+        long beforeInsertCount = bookRepository.count();
+        bookService.insert("title", "1", "1");
+        assertEquals(++beforeInsertCount, bookRepository.count());
     }
 
     @Test
@@ -58,8 +57,8 @@ public class BookServiceTest {
 
     @Test
     public void updateTest() {
-        var id = 3L;
-        var updatedBook = bookService.update(id, "title", 1L, 1L);
+        var id = "3";
+        var updatedBook = bookService.update(id, "title", "1", "1");
         var expectedBook = bookRepository.findById(id);
         assertTrue(expectedBook.isPresent());
         assertEquals(expectedBook.get(), updatedBook);

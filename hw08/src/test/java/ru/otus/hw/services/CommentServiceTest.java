@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Import({CommentServiceImpl.class})
 class CommentServiceTest {
 
-    private static final long FIRST_COMMENT_ID = 1L;
+    private static final String FIRST_COMMENT_ID = "1";
 
     @Autowired
     private CommentService commentService;
@@ -36,7 +36,7 @@ class CommentServiceTest {
 
     @Test
     public void findAllByBookIdTest() {
-        var bookId = 1L;
+        var bookId = "1";
         var actualComments = commentService.findAllByBookId(bookId);
         assertThat(actualComments).isNotNull().hasSize(1);
         assertEquals("text_1", actualComments.get(0).getText());
@@ -45,10 +45,9 @@ class CommentServiceTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void insertTest() {
-        long expectedId = 0L;
-        commentService.insert("text", 1L);
-        var expectedComment = commentRepository.findById(expectedId);
-        assertTrue(expectedComment.isPresent());
+        long beforeInsertCount = commentRepository.count();
+        commentService.insert("text", "1");
+        assertEquals(++beforeInsertCount, commentRepository.count());
     }
 
     @Test
@@ -60,8 +59,8 @@ class CommentServiceTest {
 
     @Test
     public void updateTest() {
-        long id = 3L;
-        var updatedComment = commentService.update(id, "text1", 1L);
+        var id = "3";
+        var updatedComment = commentService.update(id, "text1", "1");
         var expectedComment = commentRepository.findById(id);
         assertTrue(expectedComment.isPresent());
         assertEquals(expectedComment.get(), updatedComment);

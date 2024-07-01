@@ -17,7 +17,6 @@ public class AuthorServiceImpl implements AuthorService {
 
     private final BookRepository bookRepository;
 
-    @Transactional(readOnly = true)
     @Override
     public List<Author> findAll() {
         return authorRepository.findAll();

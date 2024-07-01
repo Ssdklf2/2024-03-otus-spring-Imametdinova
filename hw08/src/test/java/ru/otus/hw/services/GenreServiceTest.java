@@ -1,14 +1,13 @@
 package ru.otus.hw.services;
 
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
-import ru.otus.hw.models.Author;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.models.Genre;
-import ru.otus.hw.repositories.AuthorRepository;
 import ru.otus.hw.repositories.BookRepository;
 import ru.otus.hw.repositories.GenreRepository;
 
@@ -31,7 +30,7 @@ class GenreServiceTest {
     @Test
     void update() {
         var genre = new Genre();
-        long id = 1L;
+        var id = "1";
         String anotherGenre = "another_genre";
         genre.setId(id);
         genre.setName(anotherGenre);
@@ -41,7 +40,7 @@ class GenreServiceTest {
         Genre actualGenre = genreRepository.findById(id).get();
         assertEquals(anotherGenre, actualGenre.getName());
 
-        Book book = bookRepository.findById(1L).get();
+        Book book = bookRepository.findById("1").get();
         assertEquals(anotherGenre, book.getGenre().getName());
     }
 }

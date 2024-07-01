@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -23,7 +24,7 @@ public class Comment {
 
     @Id
     @EqualsAndHashCode.Include
-    private long id;
+    private String id;
 
     @Field(name = "text")
     private String text;
@@ -31,4 +32,9 @@ public class Comment {
     @DBRef(lazy = true)
     @ToString.Exclude
     private Book book;
+
+    public Comment(String text, Book book) {
+        this.text = text;
+        this.book = book;
+    }
 }

@@ -29,7 +29,7 @@ class AuthorServiceTest {
     @Test
     void update() {
         var author = new Author();
-        long id = 1L;
+        var id = "1";
         String anotherName = "another_name";
         author.setId(id);
         author.setFullName(anotherName);
@@ -39,7 +39,7 @@ class AuthorServiceTest {
         Author actualAuthor = authorRepository.findById(id).get();
         assertEquals(anotherName, actualAuthor.getFullName());
 
-        Book book = bookRepository.findById(1L).get();
+        Book book = bookRepository.findById("1").get();
         assertEquals(anotherName, book.getAuthor().getFullName());
     }
 }

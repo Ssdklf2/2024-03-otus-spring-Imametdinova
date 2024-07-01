@@ -35,19 +35,19 @@ public class BookRepositoryCustomTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void deleteByIdTest() {
-        Book book = new Book();
-        book.setId(1);
+        String firstId = "1";
 
-        bookRepository.deleteBook(book);
-        List<Comment> comments = commentRepository.findByBookId(1);
+        bookRepository.deleteByBookId(firstId);
+        List<Comment> comments = commentRepository.findByBookId(firstId);
         assertTrue(comments.isEmpty());
     }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void deleteAllTest() {
+        String firstId = "1";
         bookRepository.deleteAll();
-        List<Comment> comments = commentRepository.findByBookId(1);
+        List<Comment> comments = commentRepository.findByBookId(firstId);
         assertTrue(comments.isEmpty());
     }
 
@@ -55,25 +55,27 @@ public class BookRepositoryCustomTest {
     void updateAuthorTest() {
         var author = new Author();
         var anotherName = "another_name";
-        author.setId(1L);
+        String firstId = "1";
+        author.setId(firstId);
         author.setFullName(anotherName);
 
         assertEquals(1, bookRepository.updateAuthor(author));
 
-        Book book = bookRepository.findById(1L).get();
+        Book book = bookRepository.findById(firstId).get();
         assertEquals(anotherName, book.getAuthor().getFullName());
     }
 
     @Test
     void updateGenreTest() {
+        String firstId = "1";
         var genre = new Genre();
         String anotherName = "another_genre";
-        genre.setId(1L);
+        genre.setId(firstId);
         genre.setName(anotherName);
 
         assertEquals(1, bookRepository.updateGenre(genre));
 
-        Book book = bookRepository.findById(1L).get();
+        Book book = bookRepository.findById(firstId).get();
         assertEquals(anotherName, book.getGenre().getName());
     }
 }
