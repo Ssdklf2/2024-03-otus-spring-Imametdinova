@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Books</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+</head>
+<body>
+<header th:insert="~{fragments/general.html :: header}"></header>
+<h1>List of books: </h1>
+<div>
+    <hr>
+    <p> Books found: <span th:text="${books.size()}"></span> |
+        <a href="book.html" th:href="@{/books/create}"><span>Create new book</span></a></p>
+
+    <div th:each="book :${books}">
+        <hr>
+        <p><a href="book.html" th:href="@{/books/{id}(id=${book.id})}"> <span th:text="${book.title}"></span></a></p>
+    </div>
+</div>
+</body>
+</html>
