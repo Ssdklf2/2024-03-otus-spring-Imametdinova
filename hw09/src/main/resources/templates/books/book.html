@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+</head>
+<body>
+<header th:insert="~{fragments/general.html :: header}"></header>
+<h2><span th:text="${book.title}"></span></h2>
+<div th:object="${book}">
+    <p> Author: <span th:text="*{author.fullName}">author name</span><p>
+    <p> Genre: <span th:text="*{genre.name}">genre</span><p>
+    <p><a href="list.html" th:href="@{/books/edit(id=*{id})}">Edit book</a></p>
+    <form th:action="@{/books/remove(id=*{id})}" method="post">
+        <button type="submit">Remove book</button>
+    </form>
+</div>
+<div>
+    <hr>
+    <p>Comments: </p>
+    <div th:each="comment,stat :${comments}">
+        <hr>
+        <p><span th:text="${stat.index + 1}"></span>. <span th:text="${comment.text}"></span></p>
+    </div>
+</div>
+</body>
+</html>
