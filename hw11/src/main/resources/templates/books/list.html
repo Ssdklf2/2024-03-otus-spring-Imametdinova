@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Books</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+</head>
+<script>
+    fetch('api/books')
+    .then(response => response.json())
+    .then(data => {
+        var div = document.getElementById('books');
+        var booksSizeParagraph = document.createElement('p');
+        booksSizeParagraph.textContent = 'Books found: ' + data.length;
+        div.appendChild(booksSizeParagraph);
+
+        var list = document.createElement('div');
+
+        data.forEach(book => {
+            var paragraphBook = document.createElement('p');
+
+            var bookRef = document.createElement('a');
+            bookRef.setAttribute('href', '/books/' + `${book.id}`);
+
+            let bookTitle = document.createElement('span');
+            bookTitle.innerHTML = `${book.title}`;
+
+            bookRef.appendChild(bookTitle);
+            paragraphBook.appendChild(bookRef);
+            list.appendChild(paragraphBook);
+        });
+        div.appendChild(list);
+    }).catch(error => {
+    console.log(error)
+    });
+</script>
+<body>
+<header th:insert="~{fragments/general.html :: header}"></header>
+<h1>List of books: </h1>
+<a href="book.html" th:href="@{/books/create}"><span>Create new book</span></a>
+<div>
+    <div id="books"></div>
+</div>
+</body>
+</html>
