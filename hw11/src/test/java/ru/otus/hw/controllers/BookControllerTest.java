@@ -11,8 +11,10 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import ru.otus.hw.dto.AuthorDto;
 import ru.otus.hw.dto.BookDto;
 import ru.otus.hw.dto.BookRequestDto;
+import ru.otus.hw.dto.GenreDto;
 import ru.otus.hw.models.Author;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.models.Genre;
@@ -159,6 +161,9 @@ class BookControllerTest {
 
 
     private List<BookDto> getBooksDto() {
-        return List.of(new BookDto("1", "BookTitle_1", authors.get(0), genres.get(0)), new BookDto("2", "BookTitle_2", authors.get(1), genres.get(1)), new BookDto("3", "BookTitle_3", authors.get(2), genres.get(2)));
+        return List.of(
+                new BookDto("1", "BookTitle_1", AuthorDto.fromDomainObject(authors.get(0)), GenreDto.fromDomainObject(genres.get(0))),
+                new BookDto("2", "BookTitle_2", AuthorDto.fromDomainObject(authors.get(1)), GenreDto.fromDomainObject(genres.get(1))),
+                new BookDto("3", "BookTitle_3", AuthorDto.fromDomainObject(authors.get(2)), GenreDto.fromDomainObject(genres.get(2))));
     }
 }

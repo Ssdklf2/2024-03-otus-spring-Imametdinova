@@ -2,7 +2,7 @@ package ru.otus.hw.mongo.changelogs;
 
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
-import com.mongodb.reactivestreams.client.MongoDatabase;
+import com.mongodb.client.MongoDatabase;
 import org.bson.types.ObjectId;
 import ru.otus.hw.models.Author;
 import ru.otus.hw.models.Book;
@@ -56,12 +56,11 @@ public class DatabaseChangelog {
 
     }
 
-
     @ChangeSet(order = "005", id = "insertComments", author = "", runAlways = true)
     public void insertComments(CommentRepository repository) {
         repository.saveAll(List.of(
                 new Comment(new ObjectId().toString(), "text_1", books.get(0)),
                 new Comment(new ObjectId().toString(), "text_2", books.get(0)),
-                new Comment(new ObjectId().toString(), "text_3", books.get(2))));
+                new Comment(new ObjectId().toString(), "text_3", books.get(2)))).collectList().block();
     }
 }

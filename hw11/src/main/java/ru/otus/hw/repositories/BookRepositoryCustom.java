@@ -11,7 +11,7 @@ public interface BookRepositoryCustom {
 
     Mono<Void> deleteAll();
 
-    long updateAuthor(Author author);
+    Mono<Void> updateAuthor(Author author);
 
-    long updateGenre(Genre genre);
+    Mono<Void> updateGenre(Genre genre);
 }

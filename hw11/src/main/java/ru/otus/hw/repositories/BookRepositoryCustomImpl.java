@@ -1,6 +1,5 @@
 package ru.otus.hw.repositories;
 
-import com.mongodb.client.result.UpdateResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -22,31 +21,29 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
 
     @Override
     public Mono<Void> deleteByBookId(String bookId) {
-        mongoTemplate.remove(Query.query(Criteria.where("_id").is(bookId)), Book.class);
-        mongoTemplate.remove(Query.query(Criteria.where("book._id").is(bookId)), Comment.class);
-        return Mono.empty();
+        return mongoTemplate.remove(Query.query(Criteria.where("_id").is(bookId)), Book.class)
+                .then(mongoTemplate.remove(Query.query(Criteria.where("book._id").is(bookId)), Comment.class))
+                .then();
     }
 
     @Override
     public Mono<Void> deleteAll() {
-        mongoTemplate.remove(new Query(), Book.class);
-        commentRepository.deleteAll();
-        return Mono.empty();
+        return mongoTemplate.remove(new Query(), Book.class)
+                .then(commentRepository.deleteAll())
+                .then();
     }
 
     @Override
-    public long updateAuthor(Author author) {
+    public Mono<Void> updateAuthor(Author author) {
         Query query = Query.query(Criteria.where("author._id").is(author.getId()));
         Update update = new Update().set("author", author);
-        UpdateResult updateResult = mongoTemplate.updateMulti(query, update, Book.class).block();
-        return updateResult.getMatchedCount();
+        return mongoTemplate.updateMulti(query, update, Book.class).then();
     }
 
     @Override
-    public long updateGenre(Genre genre) {
+    public Mono<Void> updateGenre(Genre genre) {
         Query query = Query.query(Criteria.where("genre._id").is(genre.getId()));
         Update update = new Update().set("genre", genre);
-        UpdateResult updateResult = mongoTemplate.updateMulti(query, update, Book.class).block();
-        return updateResult.getMatchedCount();
+        return mongoTemplate.updateMulti(query, update, Book.class).then();
     }
 }

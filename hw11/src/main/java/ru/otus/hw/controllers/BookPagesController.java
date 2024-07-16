@@ -27,25 +27,22 @@ public class BookPagesController {
 
     @GetMapping("/books/{id}")
     public String listPage(@PathVariable String id, Model model) {
-        model.addAttribute("book", bookRepository.findById(id).map(BookDto::fromDomainObject).block());
+        model.addAttribute("book", bookRepository.findById(id).map(BookDto::fromDomainObject));
         return "books/book";
     }
 
     @GetMapping("/books/create")
     public String createPage(Model model) {
         model.addAttribute("book", new BookDto());
-        model.addAttribute("authors", authorRepository.findAll().collectList().block());
-        model.addAttribute("genres", genreRepository.findAll().collectList().block());
         return "books/create";
     }
 
 
     @GetMapping("/books/edit/{id}")
     public String editPage(@PathVariable String id, Model model) {
-        BookDto book = bookRepository.findById(id).map(BookDto::fromDomainObject).block();
-        model.addAttribute("book", book);
-        model.addAttribute("authors", authorRepository.findAll().collectList().block());
-        model.addAttribute("genres", genreRepository.findAll().collectList().block());
+        model.addAttribute("book", bookRepository.findById(id).map(BookDto::fromDomainObject));
+        model.addAttribute("authors", authorRepository.findAll().collectList());
+        model.addAttribute("genres", genreRepository.findAll().collectList());
         return "books/edit";
     }
 }

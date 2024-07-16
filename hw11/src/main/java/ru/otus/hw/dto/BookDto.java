@@ -18,21 +18,21 @@ public class BookDto {
     @NotBlank(message = "{title-should-not-be-blank}")
     private String title;
 
-    private Author author;
+    private AuthorDto author;
 
-    private Genre genre;
+    private GenreDto genre;
 
-    public BookDto(String title, Author author, Genre genre) {
+    public BookDto(String title, AuthorDto author, GenreDto genre) {
         this.title = title;
         this.author = author;
         this.genre = genre;
     }
 
     public Book toDomainObject() {
-        return new Book(id, title, author, genre);
+        return new Book(id, title, author.toDomainObject(), genre.toDomainObject());
     }
 
     public static BookDto fromDomainObject(Book book) {
-        return new BookDto(book.getId(), book.getTitle(), book.getAuthor(), book.getGenre());
+        return new BookDto(book.getId(), book.getTitle(), AuthorDto.fromDomainObject(book.getAuthor()), GenreDto.fromDomainObject(book.getGenre()));
     }
 }

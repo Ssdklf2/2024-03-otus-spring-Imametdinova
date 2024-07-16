@@ -25,6 +25,42 @@
       })
         .then(rawResponse => rawResponse.json())
         .then(json => location.href = "/books")
+    };
+    document.addEventListener('DOMContentLoaded', function () {
+      fetchGenres();
+      fetchAuthors()
+    });
+    function fetchGenres() {
+      fetch('/api/genres')
+        .then(response => response.json())
+        .then(genres => {
+          const genresSelect = document.getElementById('genres');
+          genres.forEach(genre => {
+            const option = document.createElement('option');
+            option.value = genre.id;
+            option.textContent = genre.name;
+            genresSelect.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+    function fetchAuthors() {
+      fetch('/api/authors')
+        .then(response => response.json())
+        .then(authors => {
+          const authorsSelect = document.getElementById('authors');
+          authors.forEach(author => {
+            const option = document.createElement('option');
+            option.value = author.id;
+            option.textContent = author.fullName;
+            authorsSelect.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error(error);
+        });
     }
 </script>
 <body>
@@ -38,16 +74,12 @@
 
     <div class="row">
         <label for="authors">Author: </label>
-        <select id="authors">
-            <option th:each="author : ${authors}" th:value="${author.id}" th:text="${author.fullName}"></option>
-        </select>
+        <select id="authors"></select>
     </div>
 
     <div class="row">
         <label for="genres">Genre: </label>
-        <select id="genres">
-            <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.name}"></option>
-        </select>
+        <select id="genres"></select>
     </div>
     <div class="row">
         <button type="button" onclick="saveBook()">Save</button>
