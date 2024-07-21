@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create book</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+</head>
+<script>
+    function saveBook() {
+      const titleInput = document.getElementById("book-title-input")
+      const authorInput = document.getElementById("authors")
+      const genreInput = document.getElementById("genres")
+
+      const book = {
+            title: titleInput.value,
+            authorId: authorInput.value,
+            genreId: genreInput.value }
+      fetch('/api/books', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(book)
+      })
+        .then(rawResponse => rawResponse.json())
+        .then(json => location.href = "/books")
+    };
+    document.addEventListener('DOMContentLoaded', function () {
+      fetchGenres();
+      fetchAuthors()
+    });
+    function fetchGenres() {
+      fetch('/api/genres')
+        .then(response => response.json())
+        .then(genres => {
+          const genresSelect = document.getElementById('genres');
+          genres.forEach(genre => {
+            const option = document.createElement('option');
+            option.value = genre.id;
+            option.textContent = genre.name;
+            genresSelect.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+    function fetchAuthors() {
+      fetch('/api/authors')
+        .then(response => response.json())
+        .then(authors => {
+          const authorsSelect = document.getElementById('authors');
+          authors.forEach(author => {
+            const option = document.createElement('option');
+            option.value = author.id;
+            option.textContent = author.fullName;
+            authorsSelect.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+</script>
+<body>
+<header th:insert="~{fragments/general.html :: header}"></header>
+<form id="create-form" action="create.html" th:method="post" th:action="@{/books/create}" th:object="${book}">
+    <h3>Book:</h3>
+    <div class="row">
+        <label for="book-title-input">Title:</label>
+        <input id="book-title-input" name="name" type="text"/>
+    </div>
+
+    <div class="row">
+        <label for="authors">Author: </label>
+        <select id="authors"></select>
+    </div>
+
+    <div class="row">
+        <label for="genres">Genre: </label>
+        <select id="genres"></select>
+    </div>
+    <div class="row">
+        <button type="button" onclick="saveBook()">Save</button>
+        <a href="list.html" th:href="@{/books}"><button type="button">Cancel</button></a>
+    </div>
+</form>
+</body>
+</html>
