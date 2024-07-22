@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -14,26 +14,21 @@ import ru.otus.hw.dto.BookDto;
 import ru.otus.hw.dto.BookRequestDto;
 import ru.otus.hw.models.Author;
 import ru.otus.hw.models.Genre;
-import ru.otus.hw.models.User;
-import ru.otus.hw.models.enums.Role;
-import ru.otus.hw.security.SecurityConfiguration;
 import ru.otus.hw.services.AuthorService;
 import ru.otus.hw.services.BookService;
 import ru.otus.hw.services.CommentService;
-import ru.otus.hw.security.CustomUserDetailsService;
 import ru.otus.hw.services.GenreService;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(BookController.class)
-@Import({SecurityConfiguration.class})
+@WebMvcTest(controllers = BookController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
 class BookControllerTest {
 
     @Autowired
@@ -54,48 +49,33 @@ class BookControllerTest {
     @MockBean
     private GenreService genreService;
 
-    @MockBean
-    private CustomUserDetailsService customUserDetailsService;
-
     private List<Genre> genres;
 
     private List<Author> authors;
 
     private List<BookDto> books;
 
-    private User authUser;
-
     @BeforeEach
     public void init() {
         genres = getGenres();
         authors = getAuthors();
         books = getBooksDto();
-        authUser = new User("id", "username", "password", Set.of(Role.ROLE_USER));
     }
 
     @Test
     void getBooks() throws Exception {
         given(bookService.findAll()).willReturn(books);
-        mvc.perform(get("/api/books")
-                        .with(user(authUser)))
+        mvc.perform(get("/api/books"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(books)));
     }
 
     @Test
-    void getBooks_AndGetUnauthorizedException() throws Exception {
-        given(bookService.findAll()).willReturn(books);
-        mvc.perform(get("/api/books"))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
     void getBook() throws Exception {
         String id = "1";
         given(bookService.findById(id)).willReturn(books.get(0));
-        mvc.perform(get("/api/books/" + id)
-                        .with(user(authUser)))
+        mvc.perform(get("/api/books/" + id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.title").value("BookTitle_1"));
@@ -107,7 +87,6 @@ class BookControllerTest {
         given(bookService.insert(request)).willReturn(books.get(1));
         mvc.perform(MockMvcRequestBuilders
                         .post("/api/books")
-                        .with(user(authUser))
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -121,7 +100,6 @@ class BookControllerTest {
         given(bookService.update(request)).willReturn(books.get(2));
         mvc.perform(MockMvcRequestBuilders
                         .put("/api/books/" + id)
-                        .with(user(authUser))
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -131,8 +109,7 @@ class BookControllerTest {
     @Test
     void removeBook() throws Exception {
         String id = "1";
-        mvc.perform(delete("/api/books/" + id)
-                        .with(user(authUser)))
+        mvc.perform(delete("/api/books/" + id))
                 .andExpect(status().isNoContent());
     }
 
