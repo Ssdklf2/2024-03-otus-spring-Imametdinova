@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = {BookPagesController.class, BookController.class})
 @Import({SecurityConfiguration.class})
-class BookPagesSecurityConfigurationTest {
+class BookEndpointAuthenticationTest {
 
     @Autowired
     private MockMvc mvc;
