@@ -1,0 +1,15 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 0
+      database: test
+#      port: 27017
+#      database: otus-spring
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.2
+mongock:
+  enabled: false
