@@ -4,9 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.otus.hw.models.Author;
 import ru.otus.hw.models.Book;
-import ru.otus.hw.models.Genre;
 
 @Data
 @AllArgsConstructor
@@ -33,6 +31,7 @@ public class BookDto {
     }
 
     public static BookDto fromDomainObject(Book book) {
-        return new BookDto(book.getId(), book.getTitle(), AuthorDto.fromDomainObject(book.getAuthor()), GenreDto.fromDomainObject(book.getGenre()));
+        return new BookDto(book.getId(), book.getTitle(), AuthorDto.fromDomainObject(book.getAuthor()),
+                GenreDto.fromDomainObject(book.getGenre()));
     }
 }

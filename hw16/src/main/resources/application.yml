@@ -12,3 +12,19 @@ mongock:
     write-concern:
       journal: false
     read-concern: local
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  health:
+    defaults:
+      enabled: true
+logging:
+  level:
+    root: info
+  file:
+    name: logfile.log
