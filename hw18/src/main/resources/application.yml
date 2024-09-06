@@ -12,3 +12,10 @@ mongock:
     write-concern:
       journal: false
     read-concern: local
+resilience4j.circuitbreaker:
+  instances:
+    externalService:
+      slidingWindowSize: 5
+      permittedNumberOfCallsInHalfOpenState: 2
+      waitDurationInOpenState: 3s
+      failureRateThreshold: 5
