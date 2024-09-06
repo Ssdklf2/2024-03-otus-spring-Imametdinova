@@ -10,9 +10,9 @@
     </parent>
 
     <groupId>ru.otus.hw</groupId>
-    <artifactId>hw13</artifactId>
+    <artifactId>hw17</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring-acl</name>
+    <name>docker</name>
 
     <properties>
         <java.version>17</java.version>
@@ -136,5 +136,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

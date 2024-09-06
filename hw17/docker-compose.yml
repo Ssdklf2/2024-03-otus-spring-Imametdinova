@@ -1,0 +1,25 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: otus-spring
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongodb
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_DATABASE: otus-spring
+      MONGOCK_RUNNER_TYPE: InitializingBean
+      MONGOCK_CHANGE_LOGS_SCAN_PACKAGE: ru.otus.hw.mongo.changelogs
+      MONGOCK_MONGO_DB_WRITE_CONCERN_JOURNAL: "false"
+      MONGOCK_MONGO_DB_READ_CONCERN: local
+    depends_on:
+      - mongodb
