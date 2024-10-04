@@ -13,5 +13,8 @@ public class Application {
         SpringApplication.run(Application.class, args);
         System.out.printf("Чтобы перейти на страницу сайта открывай: %n%s%n",
                 "http://localhost:8080");
+        System.out.printf("User: %n username: %s | password: %s%n",
+                "user", "user");
+
     }
 }

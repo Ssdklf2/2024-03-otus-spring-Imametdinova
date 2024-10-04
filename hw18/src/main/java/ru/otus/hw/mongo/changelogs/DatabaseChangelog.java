@@ -72,6 +72,6 @@ public class DatabaseChangelog {
         repository.saveAll(List.of(
                 new User(new ObjectId().toString(), "username_1", "username_1", Set.of(Role.ROLE_USER)),
                 new User(new ObjectId().toString(), "username_2", "username_2", Set.of(Role.ROLE_USER)),
-                new User(new ObjectId().toString(), "author", "author", Set.of(Role.ROLE_AUTHOR))));
+                new User(new ObjectId().toString(), "user", "user", Set.of(Role.ROLE_AUTHOR))));
     }
 }
