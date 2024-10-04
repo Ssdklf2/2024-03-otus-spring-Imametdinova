@@ -8,7 +8,6 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.data.MongoPagingItemReader;
@@ -18,12 +17,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.transaction.PlatformTransactionManager;
+import ru.otus.hw.cache.CacheManager;
 import ru.otus.hw.models.Author;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.models.Genre;
 import ru.otus.hw.models.JpaAuthor;
 import ru.otus.hw.models.JpaBook;
 import ru.otus.hw.models.JpaGenre;
+import ru.otus.hw.processors.AuthorProcessor;
+import ru.otus.hw.processors.BookProcessor;
+import ru.otus.hw.processors.GenreProcessor;
 import ru.otus.hw.repositories.JpaAuthorRepository;
 import ru.otus.hw.repositories.JpaBookRepository;
 import ru.otus.hw.repositories.JpaGenreRepository;
@@ -53,14 +56,6 @@ public class JobConfig {
     private final JpaGenreRepository jpaGenreRepository;
 
     private final Map<String, Sort.Direction> sortsMap = Collections.singletonMap("id", Sort.Direction.ASC);
-
-    private final Map<String, JpaGenre> genreMap;
-
-    private final Map<String, JpaAuthor> authorMap;
-
-    private Long simpleAuthorSequence = 0L;
-
-    private Long simpleGenreSequence = 0L;
 
     @Bean
     public MongoPagingItemReader<Author> mongoAuthorReader(MongoOperations operations) {
@@ -99,38 +94,23 @@ public class JobConfig {
     }
 
     @Bean
-    public ItemProcessor<Author, JpaAuthor> mongoToJpaAuthorProcessor() {
-        return mongoAuthor -> {
-            Long id = simpleAuthorSequence++;
-            JpaAuthor jpaAuthor = JpaAuthor.builder()
-                    .id(id)
-                    .fullName(mongoAuthor.getFullName())
-                    .build();
-            authorMap.put(mongoAuthor.getId(), jpaAuthor);
-            return jpaAuthor;
-        };
+    public AuthorProcessor authorProcessor() {
+        return new AuthorProcessor(cacheManager());
     }
 
     @Bean
-    public ItemProcessor<Genre, JpaGenre> mongoToJpaGenreProcessor() {
-        return mongoGenre -> {
-            Long id = simpleGenreSequence++;
-            JpaGenre jpaGenre = JpaGenre.builder()
-                    .id(id)
-                    .name(mongoGenre.getName())
-                    .build();
-            genreMap.put(mongoGenre.getId(), jpaGenre);
-            return jpaGenre;
-        };
+    public GenreProcessor genreProcessor() {
+        return new GenreProcessor(cacheManager());
     }
 
     @Bean
-    public ItemProcessor<Book, JpaBook> mongoToJpaBookProcessor() {
-        return book -> JpaBook.builder()
-                .title(book.getTitle())
-                .jpaAuthor(authorMap.get(book.getAuthor().getId()))
-                .jpaGenre(genreMap.get(book.getGenre().getId()))
-                .build();
+    public BookProcessor bookProcessor() {
+        return new BookProcessor(cacheManager());
+    }
+
+    @Bean
+    public CacheManager cacheManager() {
+        return new CacheManager();
     }
 
     @Bean
@@ -151,11 +131,11 @@ public class JobConfig {
     @Bean
     public Step migrateAuthorsStep(ItemReader<Author> reader,
                                    ItemWriter<JpaAuthor> writer,
-                                   ItemProcessor<Author, JpaAuthor> processor) {
+                                   AuthorProcessor authorProcessor) {
         return new StepBuilder("migrateAuthorsStep", jobRepository)
                 .<Author, JpaAuthor>chunk(CHUNK_SIZE, platformTransactionManager)
                 .reader(reader)
-                .processor(processor)
+                .processor(authorProcessor)
                 .writer(writer)
                 .build();
     }
@@ -163,11 +143,11 @@ public class JobConfig {
     @Bean
     public Step migrateGenresStep(ItemReader<Genre> reader,
                                   ItemWriter<JpaGenre> writer,
-                                  ItemProcessor<Genre, JpaGenre> processor) {
+                                  GenreProcessor genreProcessor) {
         return new StepBuilder("migrateGenresStep", jobRepository)
                 .<Genre, JpaGenre>chunk(CHUNK_SIZE, platformTransactionManager)
                 .reader(reader)
-                .processor(processor)
+                .processor(genreProcessor)
                 .writer(writer)
                 .build();
     }
@@ -175,11 +155,11 @@ public class JobConfig {
     @Bean
     public Step migrateBooksStep(ItemReader<Book> reader,
                                  ItemWriter<JpaBook> writer,
-                                 ItemProcessor<Book, JpaBook> processor) {
+                                 BookProcessor bookProcessor) {
         return new StepBuilder("migrateBooksStep", jobRepository)
                 .<Book, JpaBook>chunk(CHUNK_SIZE, platformTransactionManager)
                 .reader(reader)
-                .processor(processor)
+                .processor(bookProcessor)
                 .writer(writer)
                 .build();
     }
